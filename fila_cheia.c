@@ -55,8 +55,10 @@ void* producer(void* arg) {
         sleep(1);
 
         pthread_mutex_lock(&mutex);
-        while (count == QUEUE_SIZE)
+        while (count == QUEUE_SIZE) {
+            printf("\033[0;32m[Produtor %d] não conseguiu inserir\033[0m\n", id);
             pthread_cond_wait(&cond_not_full, &mutex);
+        }
 
         local_clock.vector[id]++;
         enqueue(local_clock);
@@ -76,8 +78,11 @@ void* consumer(void* arg) {
         sleep(3);
 
         pthread_mutex_lock(&mutex);
-        while (count == 0)
+        while (count == 0){
+            printf("\033[0;32m[Consumidor %d] não conseguiu consumir\033[0m\n", id);
             pthread_cond_wait(&cond_not_empty, &mutex);
+            
+        }
 
         VectorClock clk = dequeue();
         print_clock(clk, id);
